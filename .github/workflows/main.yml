@@ -3,9 +3,9 @@ name: Build and Run Docker Image
 on:
   pull_request:
     branches:
-      - "main"   
-    types: 
-      - closed 
+      - "main" 
+    types:
+      - closed  
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true  # Ensure PR is merged before continuing
+    if: github.event.pull_request.merged == true  # Ensure the PR was merged, not just closed
 
     steps:
       # Step 1: Checkout the repository code
@@ -24,25 +24,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      # Step 3: Log in to Docker (if needed for pushing, but skipped in your case)
-      # If you were pushing the image to a registry, you would log in here.
-      # - name: Docker Login
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ${{ secrets.HOST }}  # Optional for non-registry use
-
-      # Step 4: Build Docker image using the provided Dockerfile
+      # Step 3: Build Docker image using the provided Dockerfile
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
-          file: ./Dockerfile 
-          tags: myapp:latest  
-          push: false  
+          context: .  # Root directory of your repository
+          file: ./Dockerfile  # Path to your Dockerfile
+          tags: myapp:latest  # Image tag
+          push: false  # Do not push to a registry
 
-      # Step 5: Run the Docker image as a container
+      # Step 4: Run the Docker image as a container
       - name: Run Docker container
         run: |
           docker run -d -p 80:80 myapp:latest
-      
+          # This will run the container in detached mode (-d) and bind port 80 to the host
 
