@@ -3,9 +3,9 @@ name: Build and Run Docker Image
 on:
   pull_request:
     branches:
-      - "CI_Release_Development"   # Trigger on PR closed for specific branch
+      - "main"   
     types: 
-      - closed # Only trigger when PR is closed (merged)
+      - closed 
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
