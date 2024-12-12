@@ -1,11 +1,11 @@
-name: Docker Build and Run
+name: Build and Run Docker Image
 
 on:
   pull_request:
     branches:
-      - "CI_Release_Development"
+      - "CI_Release_Development"   # Trigger on PR closed for specific branch
     types: 
-      - closed # Trigger when PR is closed (merged)
+      - closed # Only trigger when PR is closed (merged)
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -13,36 +13,36 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true # Ensure the PR was merged
+    if: github.event.pull_request.merged == true  # Ensure PR is merged before continuing
 
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v3
-        if: github.event.pull_request.merged == true
 
-      # Step 2: Set up Docker
-      - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-        if: github.event.pull_request.merged == true
+      # Step 2: Set up Docker Buildx (for building images)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      # Step 3: Build the Docker image using the Dockerfile
+      # Step 3: Log in to Docker (if needed for pushing, but skipped in your case)
+      # If you were pushing the image to a registry, you would log in here.
+      # - name: Docker Login
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ${{ secrets.HOST }}  # Optional for non-registry use
+
+      # Step 4: Build Docker image using the provided Dockerfile
       - name: Build Docker image
-        run: |
-          docker build -t myapp:latest .
-        if: github.event.pull_request.merged == true
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile 
+          tags: myapp:latest  
+          push: false  
 
-      # Step 4: Run the Docker image (locally or on the server)
+      # Step 5: Run the Docker image as a container
       - name: Run Docker container
         run: |
           docker run -d -p 80:80 myapp:latest
-        if: github.event.pull_request.merged == true
+      
 
-      # Optional: Test or execute any commands within the container
-      # Example: running a curl command to test if the container is serving correctly
-      - name: Test the running container
-        run: |
-          curl http://localhost:80
-        if: github.event.pull_request.merged == true
