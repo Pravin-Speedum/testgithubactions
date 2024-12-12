@@ -3,9 +3,9 @@ name: Build and Run Docker Image
 on:
   pull_request:
     branches:
-      - "main" 
+      ["main"]
     types:
-      - closed  
+       [closed]  
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -33,9 +33,9 @@ jobs:
           tags: myapp:latest  
           push: false  
 
-      # Step 4: Run the Docker image as a container
-      - name: Run Docker container
-        run: |
-          docker run -d -p 80:80 myapp:latest
-          # This will run the container in detached mode (-d) and bind port 80 to the host
+      # # Step 4: Run the Docker image as a container
+      # - name: Run Docker container
+      #   run: |
+      #     docker run -d -p 80:80 myapp:latest
+      #     # This will run the container in detached mode (-d) and bind port 80 to the host
 
