@@ -1,0 +1,48 @@
+name: Docker Build and Run
+
+on:
+  pull_request:
+    branches:
+      - "CI_Release_Development"
+    types: 
+      - closed # Trigger when PR is closed (merged)
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true # Ensure the PR was merged
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+        if: github.event.pull_request.merged == true
+
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+        if: github.event.pull_request.merged == true
+
+      # Step 3: Build the Docker image using the Dockerfile
+      - name: Build Docker image
+        run: |
+          docker build -t myapp:latest .
+        if: github.event.pull_request.merged == true
+
+      # Step 4: Run the Docker image (locally or on the server)
+      - name: Run Docker container
+        run: |
+          docker run -d -p 80:80 myapp:latest
+        if: github.event.pull_request.merged == true
+
+      # Optional: Test or execute any commands within the container
+      # Example: running a curl command to test if the container is serving correctly
+      - name: Test the running container
+        run: |
+          curl http://localhost:80
+        if: github.event.pull_request.merged == true
