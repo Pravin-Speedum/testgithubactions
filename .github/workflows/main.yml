@@ -13,7 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true  # Ensure the PR was merged, not just closed
+    if: github.event.pull_request.merged == true 
 
     steps:
       # Step 1: Checkout the repository code
@@ -28,10 +28,10 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .  # Root directory of your repository
-          file: ./Dockerfile  # Path to your Dockerfile
-          tags: myapp:latest  # Image tag
-          push: false  # Do not push to a registry
+          context: .  
+          file: ./Dockerfile  
+          tags: myapp:latest  
+          push: false  
 
       # Step 4: Run the Docker image as a container
       - name: Run Docker container
