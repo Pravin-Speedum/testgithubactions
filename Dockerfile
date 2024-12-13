@@ -10,6 +10,7 @@ COPY package-lock.json ./
 
 RUN npm i --force
 COPY . ./
+RUN npm install --save-dev web-vitals
 
 RUN npm run build
 
