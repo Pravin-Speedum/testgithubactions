@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React and devops !!! lorem ipsum dolor
+          Learn React and devops !!! lorem ipsum dolor vdvvdvdv
         </a>
       </header>
     </div>
